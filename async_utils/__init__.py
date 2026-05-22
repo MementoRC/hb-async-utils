@@ -1,4 +1,5 @@
 """Async utilities extracted from hummingbot.core.utils."""
+
 from async_utils.__about__ import __version__
 from async_utils.core import (
     call_sync,
