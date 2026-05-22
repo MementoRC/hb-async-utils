@@ -8,7 +8,7 @@ from async_utils.core import (
     safe_wrapper,
     wait_til,
 )
-from async_utils.retry import AllTriesFailedException, async_retry
+from async_utils.retry import AllTriesFailedError, AllTriesFailedException, async_retry
 from async_utils.tracking_nonce import (
     NonceCreator,
     get_tracking_nonce,
@@ -26,6 +26,7 @@ __all__ = [
     "NonceCreator",
     "get_tracking_nonce",
     "get_tracking_nonce_low_res",
+    "AllTriesFailedError",
     "AllTriesFailedException",
     "async_retry",
 ]

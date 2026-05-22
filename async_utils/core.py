@@ -10,7 +10,9 @@ async def safe_wrapper(c):
     except asyncio.CancelledError:
         raise
     except Exception as e:
-        logging.getLogger(__name__).error(f"Unhandled error in background task: {str(e)}", exc_info=True)
+        logging.getLogger(__name__).error(
+            f"Unhandled error in background task: {str(e)}", exc_info=True
+        )
 
 
 def safe_ensure_future(coro, *args, **kwargs):
@@ -21,7 +23,9 @@ async def safe_gather(*args, **kwargs):
     try:
         return await asyncio.gather(*args, **kwargs)
     except Exception as e:
-        logging.getLogger(__name__).debug(f"Unhandled error in background task: {str(e)}", exc_info=True)
+        logging.getLogger(__name__).debug(
+            f"Unhandled error in background task: {str(e)}", exc_info=True
+        )
         raise
 
 
@@ -31,7 +35,8 @@ async def wait_til(condition_func, timeout=10):
         if condition_func():
             return
         elif time.perf_counter() - start_time > timeout:
-            raise Exception(f"{inspect.getsource(condition_func).strip()} condition is never met. Time out reached.")
+            src = inspect.getsource(condition_func).strip()
+            raise Exception(f"{src} condition is never met. Time out reached.")
         else:
             await asyncio.sleep(0.1)
 
@@ -70,5 +75,6 @@ def call_sync(coro, loop: asyncio.AbstractEventLoop, timeout: float = 30.0):
     # Case C: target loop is running AND we are already inside it. Recursion
     # is illegal; callers should use 'await' directly in async contexts.
     raise RuntimeError(
-        "call_sync was invoked from inside the target running loop; use 'await' instead of call_sync in async contexts."
+        "call_sync was invoked from inside the target running loop;"
+        " use 'await' instead of call_sync in async contexts."
     )
