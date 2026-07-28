@@ -1,7 +1,8 @@
 import asyncio
 import inspect
-import logging
 import time
+
+from async_utils.hb_compat import get_logger
 
 
 async def safe_wrapper(c):
@@ -10,9 +11,7 @@ async def safe_wrapper(c):
     except asyncio.CancelledError:
         raise
     except Exception as e:
-        logging.getLogger(__name__).error(
-            f"Unhandled error in background task: {str(e)}", exc_info=True
-        )
+        get_logger(__name__).error(f"Unhandled error in background task: {str(e)}", exc_info=True)
 
 
 def safe_ensure_future(coro, *args, **kwargs):
@@ -23,9 +22,7 @@ async def safe_gather(*args, **kwargs):
     try:
         return await asyncio.gather(*args, **kwargs)
     except Exception as e:
-        logging.getLogger(__name__).debug(
-            f"Unhandled error in background task: {str(e)}", exc_info=True
-        )
+        get_logger(__name__).debug(f"Unhandled error in background task: {str(e)}", exc_info=True)
         raise
 
 
@@ -66,7 +63,7 @@ def call_sync(coro, loop: asyncio.AbstractEventLoop, timeout: float = 30.0):
         try:
             loop = asyncio.get_event_loop()
         except RuntimeError:
-            logging.getLogger(__name__).debug(
+            get_logger(__name__).debug(
                 "Runtime error in call_sync - Using new event loop to exec coro", exc_info=True
             )
             loop = asyncio.new_event_loop()
