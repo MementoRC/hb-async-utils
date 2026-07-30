@@ -30,10 +30,6 @@ class AsyncRetryTest(unittest.TestCase):
         super().setUp()
         self.foo_counter = 0
         self.bar_counter = 0
-        self.loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(self.loop)
-        self.addCleanup(self.loop.close)
-        self.addCleanup(asyncio.set_event_loop, None)
 
     @async_retry(3, exception_types=[FooError], raise_exp=True, retry_interval=0)
     async def foo_three_times(self, target):
@@ -68,27 +64,24 @@ class AsyncRetryTest(unittest.TestCase):
         """
         # run foo_three_times successfully
         self.foo_counter = 0
-        foo_result = self.loop.run_until_complete(self.foo_three_times(2))
+        foo_result = asyncio.run(self.foo_three_times(2))
         self.assertEqual(foo_result, 2)
 
         # pass a target to foo_three_times that it won't reach. This should raise the error
         # from async_retry.
         self.foo_counter = 0
-        self.assertRaises(
-            AllTriesFailedError,
-            self.loop.run_until_complete,
-            self.foo_three_times(5),
-        )
+        with self.assertRaises(AllTriesFailedError):
+            asyncio.run(self.foo_three_times(5))
 
         # bar_three_times has raise_exp=False on async_retry. It will return None instead of
         # raising an exception if it fails to meet its condition in the three tries.
         # First run it in a case that passes.
         self.bar_counter = 0
-        bar_result = self.loop.run_until_complete(self.bar_three_times(2))
+        bar_result = asyncio.run(self.bar_three_times(2))
         self.assertEqual(bar_result, 2)
 
         # run bar_three_times so that it does not meet its expected conditions.
         # It will not raise an error.
         self.bar_counter = 0
-        bar_result = self.loop.run_until_complete(self.bar_three_times(5))
+        bar_result = asyncio.run(self.bar_three_times(5))
         self.assertEqual(bar_result, None)

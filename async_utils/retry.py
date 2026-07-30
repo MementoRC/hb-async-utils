@@ -7,7 +7,9 @@ import functools
 import logging
 from typing import Any
 
-_LOGGER = logging.getLogger("retry")
+from async_utils.hb_compat import get_logger
+
+_LOGGER = get_logger("retry")
 
 
 class AllTriesFailedError(EnvironmentError):
