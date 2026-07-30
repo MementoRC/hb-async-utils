@@ -10,6 +10,7 @@ from async_utils.core import (
     wait_til,
 )
 from async_utils.retry import AllTriesFailedError, AllTriesFailedException, async_retry
+from async_utils.task_supervisor import TaskSupervisor
 from async_utils.tracking_nonce import (
     NonceCreator,
     get_tracking_nonce,
@@ -30,4 +31,5 @@ __all__ = [
     "AllTriesFailedError",
     "AllTriesFailedException",
     "async_retry",
+    "TaskSupervisor",
 ]
