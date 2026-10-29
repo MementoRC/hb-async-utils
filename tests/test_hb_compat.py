@@ -1,15 +1,13 @@
-"""Tests for async_utils.hb_compat.common — the hb-logger integration shim."""
+"""Tests for async_utils.hb_compat.common — the stdlib logger factory."""
 
 import logging
-
-from logger import HummingbotLogger
 
 from async_utils.hb_compat import get_logger
 
 
-def test_get_logger_returns_hummingbot_logger():
+def test_get_logger_returns_stdlib_logger():
     result = get_logger("async_utils.test_hb_compat")
-    assert isinstance(result, HummingbotLogger)
+    assert isinstance(result, logging.Logger)
 
 
 def test_get_logger_returns_same_instance_as_stdlib_getlogger():

@@ -1,10 +1,11 @@
 import asyncio
 import inspect
+import logging
 import time
 from collections.abc import Awaitable, Callable
 from typing import Any
 
-from async_utils.hb_compat import get_logger
+_LOGGER = logging.getLogger(__name__)
 
 
 async def safe_wrapper[T](c: Awaitable[T]) -> T | None:
@@ -13,7 +14,7 @@ async def safe_wrapper[T](c: Awaitable[T]) -> T | None:
     except asyncio.CancelledError:
         raise
     except Exception as e:
-        get_logger(__name__).error(f"Unhandled error in background task: {str(e)}", exc_info=True)
+        _LOGGER.error(f"Unhandled error in background task: {str(e)}", exc_info=True)
         return None
 
 
@@ -27,7 +28,7 @@ async def safe_gather(*args: Any, **kwargs: Any) -> Any:
     try:
         return await asyncio.gather(*args, **kwargs)
     except Exception as e:
-        get_logger(__name__).debug(f"Unhandled error in background task: {str(e)}", exc_info=True)
+        _LOGGER.debug(f"Unhandled error in background task: {str(e)}", exc_info=True)
         raise
 
 
@@ -68,7 +69,7 @@ def call_sync[T](coro: Awaitable[T], loop: asyncio.AbstractEventLoop, timeout: f
         try:
             loop = asyncio.get_event_loop()
         except RuntimeError:
-            get_logger(__name__).debug(
+            _LOGGER.debug(
                 "Runtime error in call_sync - Using new event loop to exec coro", exc_info=True
             )
             loop = asyncio.new_event_loop()
