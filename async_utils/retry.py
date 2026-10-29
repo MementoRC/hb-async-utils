@@ -5,6 +5,7 @@ Tools for running asynchronous functions multiple times.
 import asyncio
 import functools
 import logging
+from collections.abc import Awaitable, Callable
 from typing import Any
 
 from async_utils.hb_compat import get_logger
@@ -29,7 +30,7 @@ def async_retry(
     stats: dict[str, int] | None = None,
     raise_exp: bool = True,
     retry_interval: float = 0.5,
-):
+) -> Callable[[Callable[..., Awaitable[Any]]], Callable[..., Awaitable[Any]]]:
     """
     A decorator for async functions that will retry a function x times, where x is retry_count.
 
@@ -46,9 +47,11 @@ def async_retry(
     if logger is None:
         logger = _LOGGER
 
-    def decorator(fn):
+    def decorator[T](fn: Callable[..., Awaitable[T]]) -> Callable[..., Awaitable[T | None]]:
         @functools.wraps(fn)
-        async def retry(*args, _stats=stats, **kwargs):
+        async def retry(
+            *args: Any, _stats: dict[str, int] | None = stats, **kwargs: Any
+        ) -> T | None:
             last_exception: Exception | None = None
             for count in range(1, retry_count + 1):
                 try:
@@ -78,6 +81,7 @@ def async_retry(
                 logger.info(
                     f"Last exception raised for {repr(last_exception)}: {fn.__name__}. aborting."
                 )
+            return None
 
         return retry
 
