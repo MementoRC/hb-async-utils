@@ -15,9 +15,7 @@ import inspect
 import logging
 from collections.abc import Awaitable, Callable
 
-from async_utils.hb_compat import get_logger
-
-_LOGGER = get_logger("task_supervisor")
+_LOGGER = logging.getLogger(__name__)
 
 # A health/liveness check. Should return ``True`` when healthy, ``False`` when
 # not. Raising an exception is also treated as a failed check (the exception

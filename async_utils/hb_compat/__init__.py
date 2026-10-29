@@ -1,7 +1,7 @@
-"""hb_compat — isolates the ``hb-logger`` dependency for async_utils.
+"""hb_compat — thin stdlib logging helper kept for public API compatibility.
 
-Internal call sites import ``get_logger`` from here instead of calling
-``logging.getLogger`` directly against the stdlib. See ADR 0001 Group D.
+async_utils itself uses ``logging.getLogger(__name__)``; ``get_logger`` remains
+exported for existing consumers. See ADR 0001 (L0 independence).
 """
 
 from async_utils.hb_compat.common import get_logger

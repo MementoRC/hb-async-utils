@@ -1,22 +1,15 @@
-"""Canonical logger factory wrapping ``hb-logger`` for async_utils.
+"""Thin stdlib logger factory for async_utils.
 
-Isolates the external ``hb-logger`` import here so the rest of this
-package never touches ``logging.getLogger`` (or ``hb-logger`` itself)
-directly. Importing ``logger`` registers ``HummingbotLogger`` as the
-active ``logging.Logger`` subclass via ``logging.setLoggerClass``, so
-any logger returned by :func:`get_logger` afterwards is a
-``HummingbotLogger`` instance with the ``notify``/``network``
-extensions. See ADR 0001 Group D.
+async_utils is an L0 package and must not depend on ``hb-logger`` (ADR 0001).
+Handlers and the ``HummingbotLogger`` class are configured by hb-logger at the
+application level; this module only exposes ``logging.getLogger``.
 """
 
 import logging
-
-# Importing `logger` registers HummingbotLogger as the active logging class.
-import logger as _hb_logger  # type: ignore[import-untyped]  # noqa: F401
 
 __all__ = ["get_logger"]
 
 
 def get_logger(name: str) -> logging.Logger:
-    """Return an hb-logger-backed logger for ``name``."""
+    """Return the stdlib logger for ``name``."""
     return logging.getLogger(name)

@@ -8,9 +8,7 @@ import logging
 from collections.abc import Awaitable, Callable
 from typing import Any
 
-from async_utils.hb_compat import get_logger
-
-_LOGGER = get_logger("retry")
+_LOGGER = logging.getLogger(__name__)
 
 
 class AllTriesFailedError(EnvironmentError):
