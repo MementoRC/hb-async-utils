@@ -1,24 +1,29 @@
 import asyncio
 import inspect
 import time
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 from async_utils.hb_compat import get_logger
 
 
-async def safe_wrapper(c):
+async def safe_wrapper[T](c: Awaitable[T]) -> T | None:
     try:
         return await c
     except asyncio.CancelledError:
         raise
     except Exception as e:
         get_logger(__name__).error(f"Unhandled error in background task: {str(e)}", exc_info=True)
+        return None
 
 
-def safe_ensure_future(coro, *args, **kwargs):
+def safe_ensure_future[T](
+    coro: Awaitable[T], *args: Any, **kwargs: Any
+) -> asyncio.Future[T | None]:
     return asyncio.ensure_future(safe_wrapper(coro), *args, **kwargs)
 
 
-async def safe_gather(*args, **kwargs):
+async def safe_gather(*args: Any, **kwargs: Any) -> Any:
     try:
         return await asyncio.gather(*args, **kwargs)
     except Exception as e:
@@ -26,7 +31,7 @@ async def safe_gather(*args, **kwargs):
         raise
 
 
-async def wait_til(condition_func, timeout=10):
+async def wait_til(condition_func: Callable[[], Any], timeout: float = 10) -> None:
     start_time = time.perf_counter()
     while True:
         if condition_func():
@@ -38,13 +43,13 @@ async def wait_til(condition_func, timeout=10):
             await asyncio.sleep(0.1)
 
 
-async def run_command(*args):
+async def run_command(*args: str) -> str:
     process = await asyncio.create_subprocess_exec(*args, stdout=asyncio.subprocess.PIPE)
     stdout, stderr = await process.communicate()
     return stdout.decode().strip()
 
 
-def call_sync(coro, loop: asyncio.AbstractEventLoop, timeout: float = 30.0):
+def call_sync[T](coro: Awaitable[T], loop: asyncio.AbstractEventLoop, timeout: float = 30.0) -> T:
     # Determine which loop (if any) is running on the calling thread.
     try:
         running_loop = asyncio.get_running_loop()

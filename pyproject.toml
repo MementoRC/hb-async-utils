@@ -129,5 +129,5 @@ format-check = "ruff format --check async_utils tests"
 typecheck = "mypy async_utils"
 build = "hatchling build"
 coverage = "pytest tests/ --cov=async_utils --cov-report=term-missing"
-quality = { depends-on = ["lint", "format-check"] }
+quality = { depends-on = ["lint", "format-check", "typecheck"] }
 check = { depends-on = ["quality", "typecheck", "test"] }

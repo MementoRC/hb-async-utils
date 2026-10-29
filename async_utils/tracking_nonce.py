@@ -1,5 +1,6 @@
 import time
 import warnings
+from typing import Self
 
 
 class NonceCreator:
@@ -12,15 +13,15 @@ class NonceCreator:
         self._last_tracking_nonce = 0
 
     @classmethod
-    def for_seconds(cls):
+    def for_seconds(cls) -> Self:
         return cls(precision=cls.SECONDS_PRECISION)
 
     @classmethod
-    def for_milliseconds(cls):
+    def for_milliseconds(cls) -> Self:
         return cls(precision=cls.MILLISECONDS_PRECISION)
 
     @classmethod
-    def for_microseconds(cls):
+    def for_microseconds(cls) -> Self:
         return cls(precision=cls.MICROSECONDS_PRECISION)
 
     def get_tracking_nonce(self, timestamp: float | int | None = None) -> int:
