@@ -10,6 +10,8 @@ updates:
       time: "09:00"
       timezone: "UTC"
     open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "ruff"
     reviewers:
       - "MementoRC"
     assignees:
@@ -26,7 +28,6 @@ updates:
         patterns:
           - "pytest*"
           - "mypy*"
-          - "ruff*"
           - "pre-commit*"
           - "bandit*"
           - "safety*"
