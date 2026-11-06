@@ -64,7 +64,6 @@ exclude_lines = ["no cov", "if __name__", "if TYPE_CHECKING", "raise NotImplemen
 modules = ["async_utils"]
 test_paths = [
     "test/hummingbot/core/utils/test_async_utils.py",
-    "test/hummingbot/core/utils/test_async_utils_coverage.py",
     "test/hummingbot/core/utils/test_tracking_nonce.py",
     "test/hummingbot/core/utils/test_async_retry.py",
 ]
